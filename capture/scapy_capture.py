@@ -150,7 +150,7 @@ class ScapyCapture:
 
 # Test module
 if __name__ == "__main__":
-    capture = ScapyCapture(output_file='test_packets.csv')
+    capture = ScapyCapture(interface="eth1", output_file='test_packets.csv')
     
     def test_callback(features):
         print(f"{features['src_ip']}:{features['src_port']} → "

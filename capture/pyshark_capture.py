@@ -123,7 +123,7 @@ class PysharkCapture:
 
 # Test module
 if __name__ == "__main__":
-    capture = PysharkCapture()
+    capture = PysharkCapture(interface="eth1")
     
     def test_callback(features):
         if 'src_ip' in features:
