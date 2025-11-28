@@ -1,0 +1,50 @@
+network-ids/
+│
+├── main.py                          # Main program
+├── config.py                        # Configuration file
+│
+├── capture/
+│   ├── __init__.py
+│   ├── scapy_capture.py            # Scapy packet capture
+│   └── pyshark_capture.py          # Pyshark deep inspection
+│
+├── processing/
+│   ├── __init__.py
+│   ├── feature_extractor.py        # Extract features from packets
+│   └── data_processor.py           # Pandas data processing
+│
+├── detection/
+│   ├── __init__.py
+│   ├── signature_based.py          # Rule-based detection
+│   │   ├── port_scan.py
+│   │   ├── ddos.py
+│   │   └── arp_spoof.py
+│   └── ml_anomaly.py               # ML-based anomaly detection
+│
+├── ml_model/
+│   ├── __init__.py
+│   ├── train_model.py              # Train ML model
+│   ├── model.pkl                   # Saved trained model
+│   └── training_data.csv           # Training dataset
+│
+├── alerts/
+│   ├── __init__.py
+│   ├── alert_manager.py            # Alert handling
+│   └── logger.py                   # Logging system
+│
+├── web_dashboard/                   # Optional Flask UI
+│   ├── app.py
+│   ├── templates/
+│   └── static/
+│
+├── tests/
+│   ├── attack_simulator.py
+│   └── test_ml_model.py
+│
+├── data/
+│   ├── captured_packets.csv        # Stored packet data
+│   └── alerts.db                   # Alert database
+│
+├── requirements.txt
+├── README.md
+└── rapport.md                       # Final report
