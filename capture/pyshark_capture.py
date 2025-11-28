@@ -140,7 +140,7 @@ if __name__ == "__main__":
     test_output = "capture_test_data/pyshark_test_packets.csv"
     os.makedirs("capture_test_data", exist_ok=True)
 
-    capture = PysharkCapture(interface="eth2", output_file=test_output)
+    capture = PysharkCapture(interface="eth2", output_file=test_output) #eth2 is Victim's connected Interface
 
     def test_callback(f):
         if "src_ip" in f:

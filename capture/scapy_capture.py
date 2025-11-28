@@ -107,7 +107,7 @@ if __name__ == "__main__":
     test_file = "capture_test_data/scapy_test_packets.csv"
     os.makedirs("capture_test_data", exist_ok=True)
 
-    capture = ScapyCapture(interface="eth2", output_file=test_file)
+    capture = ScapyCapture(interface="eth2", output_file=test_file) #eth2 is Victim's connected Interface
 
     def test_callback(features):
         print(f"{features['src_ip']} → {features['dst_ip']} [{features['protocol']}]")
