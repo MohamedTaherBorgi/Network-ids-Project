@@ -8,6 +8,10 @@ network-ids/
 │   ├── scapy_capture.py            # Scapy packet capture
 │   └── pyshark_capture.py          # Pyshark deep inspection
 │
+├── capture_test_data/
+│   ├── scapy_test_packets.csv            # Scapy packet capture
+│   └── pyshark_test_packets.csv          # Pyshark deep inspection
+│
 ├── processing/
 │   ├── __init__.py
 │   ├── feature_extractor.py        # Extract features from packets
