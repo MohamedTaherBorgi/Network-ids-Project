@@ -1,0 +1,8 @@
+manually feed fake packets (Python dictionaries) into the detector and print the alerts.
+
+Run test using Python module mode
+This ALWAYS works and ignores directory importing issues
+
+Run from : ~/Python Project/network-ids
+
+python3 -m detection.test_signature_detection
