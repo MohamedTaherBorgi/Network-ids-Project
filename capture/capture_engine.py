@@ -50,7 +50,7 @@ class CaptureEngine:
 
     def _packet_handler(self, pkt):
         # raw csv
-        self._write_raw(pkt)
+        #self._write_raw(pkt) --------------> Commented to train model
 
         # extract deep features
         features = extract_features(pkt)
