@@ -1,2 +1,0 @@
-activate the virtual environment where pyshark, scapy, pandas, etc are installed :
-	source venv/bin/activate
