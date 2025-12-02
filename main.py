@@ -1,59 +1,69 @@
-"""
-Main entry point for the Network Intrusion Detection System (NIDS)
-Handles:
-    - Packet capture (Scapy or Pyshark)
-    - Feature extraction
-    - Signature-based detection
-    - Alert logging and console output
-"""
-
 import time
-from capture.scapy_capture import ScapyCapture
-from feature_extraction.feature_extractor import FeatureExtractor
-from detection.signature_based import SignatureDetector
-from alerts.alert_manager import AlertManager
-
-
-def print_alert(alert):
-    """Pretty console output for real-time alerts"""
-    print("\n" + "=" * 60)
-    print(f" 🚨 ALERT: {alert['alert_type']}  |  Severity: {alert['severity']}")
-    print("-" * 60)
-    print(f"Message: {alert['message']}")
-    print(f"Source:      {alert.get('src_ip', 'N/A')}")
-    print(f"Destination: {alert.get('dst_ip', 'N/A')}")
-    print(f"Detection:   {alert['detection_method']}")
-    print("=" * 60 + "\n")
+from capture_engine import PacketCaptureEngine
+from feature_extractor import extract_features
+from signature_based import SignatureBasedDetector
+from ml_anomaly import MLAnomalyDetector
+from alert_manager import AlertManager
 
 
 def main():
-    print("\n===== Network IDS Started =====")
-    print("Capturing packets and monitoring network traffic...\n")
 
-    # Initialize modules
-    capture = ScapyCapture(interface="eth0")          # adjust if needed
-    extractor = FeatureExtractor()
-    signatures = SignatureDetector()
-    alert_mgr = AlertManager()
+    # --- Initialize Components ---
+    capture = PacketCaptureEngine(
+        interface="eth0",            # adjust as needed
+        backend_name="scapy"         # or "pyshark"
+    )
 
-    # Live capture
-    for raw_pkt in capture.start_capture_live():
+    signature_detector = SignatureBasedDetector(
+        signature_file="config/signatures.yaml"
+    )
 
-        # Step 1: Extract features (convert raw packet → dict)
-        pkt = extractor.extract_features(raw_pkt)
-        if pkt is None:
-            continue
+    ml_detector = MLAnomalyDetector(
+        model_path="models/anomaly_model.pkl",
+        threshold=0.5
+    )
 
-        # Step 2: Run signature-based detection
-        alerts = signatures.detect_all(pkt)
+    alerts = AlertManager(
+        log_file="logs/ids.log",
+        console_output=True
+    )
 
-        # Step 3: Handle alerts
-        for alert in alerts:
-            alert_mgr.save_alert(alert)   # store in SQLite / logs.db
-            print_alert(alert)            # show on screen
+    print("IDS started. Listening for packets...")
 
-        # Prevent CPU overload
-        time.sleep(0.001)
+
+    # --- Packet Processing Loop ---
+    try:
+        for pkt in capture.capture_packets():
+
+            # pkt here is a normalized dict from ScapyCapture or PysharkCapture
+            features = extract_features(pkt)
+
+            # 1. Signature-Based Detection
+            for sig_id, description in signature_detector.evaluate_packet(features):
+                alerts.send_alert(
+                    alert_type=f"Signature [{sig_id}]",
+                    description=description,
+                    packet=features
+                )
+
+            # 2. ML-Based Anomaly Detection
+            is_anom, score = ml_detector.evaluate(features)
+            if is_anom:
+                alerts.send_alert(
+                    alert_type="ML-Anomaly",
+                    description=f"Anomalous traffic detected (score={score})",
+                    packet=features
+                )
+
+            # Prevent CPU overuse if packets are extremely fast
+            time.sleep(0.0001)
+
+    except KeyboardInterrupt:
+        print("Stopping IDS...")
+
+    finally:
+        capture.stop()
+        print("Capture stopped.")
 
 
 if __name__ == "__main__":

@@ -46,8 +46,11 @@ network-ids/
 │   └── test_ml_model.py
 │
 ├── data/
-│   ├── captured_packets.csv        # Stored packet data
-│   └── alerts.db                   # Alert database
+│   ├── captured_packets.csv        # Stored packets data from scapy
+│   ├── alerts.db                   # Alert database
+│   └── deep_packets.csv.csv        # Stored packets from pyshark
+
+deep_packets.csv
 │
 ├── requirements.txt
 ├── README.md

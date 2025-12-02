@@ -1,0 +1,46 @@
+✔ Review of signatures.yaml
+
+Our signature engine requires every rule to contain:
+
+an id ✔
+
+a description ✔
+
+a conditions block ✔
+
+And you provided:
+
+SYN_FLOOD
+
+protocol=TCP ✔
+
+flag=S ✔
+
+threshold_per_second ✔ (supported in signature_based.py)
+
+PORT_SCAN
+
+unique_dst_ports ✔
+
+time_window_seconds ✔
+
+PING_FLOOD
+
+protocol=ICMP ✔
+
+icmp_type=8 ✔
+
+threshold_per_second ✔
+
+SUSPICIOUS_DNS
+
+protocol=UDP ✔
+
+dst_port=53 ✔
+
+min_query_length ✔
+
+MALFORMED_PACKET
+
+malformed=true ✔
+Our signature engine supports a basic malformed detection flag

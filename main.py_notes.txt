@@ -1,0 +1,34 @@
+1. Initializes all engines
+
+PacketCaptureEngine (Scapy or Pyshark)
+
+SignatureBasedDetector
+
+MLAnomalyDetector
+
+AlertManager
+
+2. Starts packet capture
+
+Uses:
+
+for pkt in capture.capture_packets():
+
+
+which matches your existing architecture.
+
+3. Extracts features
+
+Uses the exact extract_features() definition you provided.
+
+4. Runs both detectors
+
+Signature-based rules (YAML)
+
+ML anomaly model (IsolationForest or similar)
+
+5. Generates alerts with AlertManager
+
+Always logs + prints.
+
+6. Handles shutdown safely

@@ -1,230 +1,124 @@
-"""
-Signature-Based Detection Engine
-Handles rule-based detection for known attack patterns
-"""
-
-from collections import defaultdict
-from datetime import datetime, timedelta
-import re
+import yaml
+import os
+import time
 
 
-class SignatureDetector:
-    """
-    Signature-based intrusion detection engine.
-    Includes:
-        - Port scan detection
-        - DDoS detection
-        - ARP spoofing
-        - SQL injection patterns
-        - XSS injection patterns
-        - Brute force detection (optional)
-    """
+class SignatureBasedDetector:
+    def __init__(self, signature_file="config/signatures.yaml"):
+        if not os.path.exists(signature_file):
+            raise FileNotFoundError(f"Missing signature file: {signature_file}")
 
-    def __init__(self):
-        # -------- Port Scan Tracking -------- #
-        self.port_scan_threshold = 20
-        self.port_scan_window = timedelta(seconds=60)
-        self.port_connections = defaultdict(list)
+        with open(signature_file, "r") as f:
+            data = yaml.safe_load(f)
 
-        # -------- DDoS Tracking -------- #
-        self.ddos_threshold = 100
-        self.ddos_window = timedelta(seconds=10)
-        self.packet_times = defaultdict(list)
+        self.signatures = data.get("signatures", [])
+        self.validate_signatures()
 
-        # -------- ARP Tracking -------- #
-        self.arp_table = {}
+        # per-signature counters
+        self.counters = {}
+        self.unique_dst = {}
+        self.last_reset = time.time()
 
-        # -------- Brute Force Tracking -------- #
-        self.bruteforce_threshold = 5
-        self.bruteforce_window = timedelta(seconds=60)
-        self.failed_logins = defaultdict(list)
+    def validate_signatures(self):
+        allowed_keys = {
+            "protocol",
+            "src_port",
+            "dst_port",
+            "flag",
+            "threshold_per_second",
+            "time_window_seconds",
+            "unique_dst_ports",
+            "icmp_type",
+            "min_query_length",
+            "malformed",
+        }
 
-        # -------- SQL Injection Patterns -------- #
-        self.sqli_patterns = [
-            r"union\s+select",
-            r"or\s+1\s*=\s*1",
-            r";\s*drop\s+table",
-            r"'\s*or\s*'.*'\s*=\s*'",
-            r"--",
-            r"xp_cmdshell",
-            r"exec\s*\(",
-        ]
+        for sig in self.signatures:
+            if "id" not in sig or "description" not in sig:
+                raise ValueError(f"Invalid signature: {sig}")
 
-        # -------- XSS Patterns -------- #
-        self.xss_patterns = [
-            r"<script[^>]*>.*?</script>",
-            r"javascript:",
-            r"onerror\s*=",
-            r"onload\s*=",
-        ]
+            cond = sig.get("conditions", {})
+            for key in cond:
+                if key not in allowed_keys:
+                    raise ValueError(f"Unsupported condition key: {key}")
 
-    # ----------------------------------------------------------------------- #
-    # PORT SCAN DETECTION
-    # ----------------------------------------------------------------------- #
-    def detect_port_scan(self, pkt):
-        if pkt.get("protocol") != "TCP":
-            return None
+    def reset_counters(self):
+        now = time.time()
+        # reset each second
+        if now - self.last_reset >= 1:
+            self.counters = {}
+            self.unique_dst = {}
+            self.last_reset = now
 
-        if 'S' not in str(pkt.get("flags", "")):
-            return None
+    def evaluate_packet(self, pkt):
+        self.reset_counters()
 
-        src_ip = pkt["src_ip"]
-        dst_port = pkt["dst_port"]
-        now = datetime.now()
+        for sig in self.signatures:
+            cond = sig.get("conditions", {})
+            if self.matches_signature(pkt, cond, sig["id"]):
+                yield sig["id"], sig["description"]
 
-        self.port_connections[src_ip].append((dst_port, now))
+    def matches_signature(self, pkt, cond, sig_id):
+        proto = pkt.get("protocol")
+        sport = pkt.get("sport")
+        dport = pkt.get("dport")
+        payload_len = pkt.get("payload_len")
 
-        # clean old connections
-        cutoff = now - self.port_scan_window
-        self.port_connections[src_ip] = [
-            (p, t) for p, t in self.port_connections[src_ip] if t > cutoff
-        ]
+        # protocol match
+        if "protocol" in cond and cond["protocol"] != proto:
+            return False
 
-        unique_ports = len({p for p, _ in self.port_connections[src_ip]})
+        # src port match
+        if "src_port" in cond and cond["src_port"] != sport:
+            return False
 
-        if unique_ports >= self.port_scan_threshold:
-            return {
-                "alert_type": "PORT_SCAN",
-                "severity": "HIGH",
-                "src_ip": src_ip,
-                "dst_ip": pkt["dst_ip"],
-                "ports_scanned": unique_ports,
-                "detection_method": "signature",
-                "message": f"Port scan detected ({unique_ports} unique ports)"
-            }
+        # dst port match
+        if "dst_port" in cond and cond["dst_port"] != dport:
+            return False
 
-        return None
+        # flag match
+        if "flag" in cond:
+            flag = cond["flag"].upper()
+            if flag == "S" and not pkt.get("syn"):
+                return False
+            if flag == "A" and not pkt.get("ack"):
+                return False
+            if flag == "F" and not pkt.get("fin"):
+                return False
+            if flag == "R" and not pkt.get("rst"):
+                return False
 
-    # ----------------------------------------------------------------------- #
-    # DDoS DETECTION
-    # ----------------------------------------------------------------------- #
-    def detect_ddos(self, pkt):
-        src_ip = pkt["src_ip"]
-        now = datetime.now()
+        # threshold per second
+        if "threshold_per_second" in cond:
+            count = self.counters.get(sig_id, 0) + 1
+            self.counters[sig_id] = count
+            if count > cond["threshold_per_second"]:
+                return True
+            return False  # Do NOT match before threshold exceeded
 
-        self.packet_times[src_ip].append(now)
+        # minimum payload length
+        if "min_query_length" in cond:
+            if payload_len is None:
+                return False
+            if payload_len < cond["min_query_length"]:
+                return False
+            return True
 
-        # Remove packets outside window
-        cutoff = now - self.ddos_window
-        self.packet_times[src_ip] = [t for t in self.packet_times[src_ip] if t > cutoff]
+        # unique destination ports
+        if "unique_dst_ports" in cond:
+            S = self.unique_dst.get(sig_id, set())
+            S.add(dport)
+            self.unique_dst[sig_id] = S
+            if len(S) >= cond["unique_dst_ports"]:
+                return True
+            return False
 
-        count = len(self.packet_times[src_ip])
+        # malformed packet detector (simple boolean)
+        if "malformed" in cond and cond["malformed"]:
+            if proto is None or sport is None or dport is None:
+                return True
+            return False
 
-        if count >= self.ddos_threshold:
-            rate = count / self.ddos_window.seconds
-
-            if rate > 500:
-                sev = "CRITICAL"
-            elif rate > 300:
-                sev = "HIGH"
-            else:
-                sev = "MEDIUM"
-
-            return {
-                "alert_type": "DDOS",
-                "severity": sev,
-                "src_ip": src_ip,
-                "dst_ip": pkt["dst_ip"],
-                "packet_count": count,
-                "packet_rate": f"{rate:.1f} pps",
-                "detection_method": "signature",
-                "message": "Potential DDoS attack detected"
-            }
-
-        return None
-
-    # ----------------------------------------------------------------------- #
-    # ARP SPOOFING
-    # ----------------------------------------------------------------------- #
-    def detect_arp_spoof(self, pkt):
-        if pkt.get("protocol") != "ARP":
-            return None
-
-        src_ip = pkt["src_ip"]
-        src_mac = pkt.get("src_mac")
-        if not src_mac:
-            return None
-
-        if src_ip in self.arp_table and self.arp_table[src_ip] != src_mac:
-            return {
-                "alert_type": "ARP_SPOOF",
-                "severity": "CRITICAL",
-                "ip_address": src_ip,
-                "original_mac": self.arp_table[src_ip],
-                "spoofed_mac": src_mac,
-                "detection_method": "signature",
-                "message": f"ARP spoofing detected: {src_ip} MAC changed!"
-            }
-
-        self.arp_table[src_ip] = src_mac
-        return None
-
-    # ----------------------------------------------------------------------- #
-    # SQL INJECTION DETECTION
-    # ----------------------------------------------------------------------- #
-    def detect_sql_injection(self, pkt):
-        if pkt.get("dst_port") not in [80, 8080, 443]:
-            return None
-
-        payload = str(pkt.get("payload", "")).lower()
-
-        for p in self.sqli_patterns:
-            if re.search(p, payload, re.IGNORECASE):
-                return {
-                    "alert_type": "SQL_INJECTION",
-                    "severity": "HIGH",
-                    "src_ip": pkt["src_ip"],
-                    "dst_ip": pkt["dst_ip"],
-                    "pattern": p,
-                    "detection_method": "signature",
-                    "message": "SQL injection pattern detected"
-                }
-
-        return None
-
-    # ----------------------------------------------------------------------- #
-    # XSS DETECTION
-    # ----------------------------------------------------------------------- #
-    def detect_xss(self, pkt):
-        if pkt.get("dst_port") not in [80, 8080, 443]:
-            return None
-
-        payload = str(pkt.get("payload", ""))
-
-        for p in self.xss_patterns:
-            if re.search(p, payload, re.IGNORECASE):
-                return {
-                    "alert_type": "XSS",
-                    "severity": "MEDIUM",
-                    "src_ip": pkt["src_ip"],
-                    "dst_ip": pkt["dst_ip"],
-                    "pattern": p,
-                    "detection_method": "signature",
-                    "message": "Cross-site scripting attempt detected"
-                }
-
-        return None
-
-    # ----------------------------------------------------------------------- #
-    # RUN ALL DETECTORS
-    # ----------------------------------------------------------------------- #
-    def detect_all(self, pkt):
-        alerts = []
-
-        detections = [
-            self.detect_port_scan,
-            self.detect_ddos,
-            self.detect_arp_spoof,
-            self.detect_sql_injection,
-            self.detect_xss,
-        ]
-
-        for detector in detections:
-            try:
-                alert = detector(pkt)
-                if alert:
-                    alerts.append(alert)
-            except Exception as e:
-                print(f"[ERROR] {detector.__name__}: {e}")
-
-        return alerts
+        # If none of the special conditions apply:
+        # packet matches only if the simple conditions above were satisfied
+        return True
