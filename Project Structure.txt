@@ -1,57 +1,37 @@
 network-ids/
 │
-├── main.py                          # Main program
-├── config.py                        # Configuration file
+├── main.py
 │
 ├── capture/
 │   ├── __init__.py
-│   ├── scapy_capture.py            # Scapy packet capture
-│   └── pyshark_capture.py          # Pyshark deep inspection
-│
-├── capture_test_data/
-│   ├── scapy_test_packets.csv            # Scapy packet capture
-│   └── pyshark_test_packets.csv          # Pyshark deep inspection
+│   ├── scapy_capture.py
+│   ├── pyshark_capture.py
+│   └── capture_engine.py
 │
 ├── processing/
 │   ├── __init__.py
-│   ├── feature_extractor.py        # Extract features from packets
-│   └── data_processor.py           # Pandas data processing
+│   └── feature_extractor.py
 │
 ├── detection/
 │   ├── __init__.py
-│   ├── signature_based.py          # Rule-based detection
-│   │   ├── port_scan.py
-│   │   ├── ddos.py
-│   │   └── arp_spoof.py
-│   └── ml_anomaly.py               # ML-based anomaly detection
-│
-├── ml_model/
-│   ├── __init__.py
-│   ├── train_model.py              # Train ML model
-│   ├── model.pkl                   # Saved trained model
-│   └── training_data.csv           # Training dataset
+│   ├── signature_based.py
+│   ├── ml_anomaly.py
+│   └── train_model.py
 │
 ├── alerts/
 │   ├── __init__.py
-│   ├── alert_manager.py            # Alert handling
-│   └── logger.py                   # Logging system
-│
-├── web_dashboard/                   # Optional Flask UI
-│   ├── app.py
-│   ├── templates/
-│   └── static/
-│
-├── tests/
-│   ├── attack_simulator.py
-│   └── test_ml_model.py
+│   └── alert_manager.py
 │
 ├── data/
-│   ├── captured_packets.csv        # Stored packets data from scapy
-│   ├── alerts.db                   # Alert database
-│   └── deep_packets.csv.csv        # Stored packets from pyshark
-
-deep_packets.csv
+│   ├── captured_packets.csv
+│   └── deep_packets.csv
 │
-├── requirements.txt
-├── README.md
-└── rapport.md                       # Final report
+├── models/
+│   └── anomaly_model.pkl
+│
+├── logs/
+│   └── ids.log
+│
+└── config/
+    ├── settings.yaml
+    └── signatures.yaml
