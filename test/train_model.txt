@@ -1,0 +1,9 @@
+On your Ubuntu victim VM, generate normal traffic for 2–3 minutes:
+
+In Ubuntu terminal – normal benign traffic :
+
+while true; do curl http://httpbin.org/get; sleep 1; done &
+ping 8.8.8.8 &
+ssh localhost whoami 2>/dev/null || true
+
+sudo python3 train_real_model.py

@@ -1,0 +1,6 @@
+body { font-family: Consolas; background: #000; color: #0f0; padding: 20px; }
+h1, h2 { color: #0f0; text-align: center; }
+table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+th, td { border: 1px solid #0f0; padding: 10px; text-align: left; }
+th { background: #003300; }
+tr:nth-child(even) { background: #001100; }

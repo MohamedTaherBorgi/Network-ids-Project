@@ -1,0 +1,10 @@
+# demo_attacks.py → run with: python3 demo_attacks.py 192.168.x.x
+
+Start the IDS on Kali:
+
+sudo python3 main.py
+
+Open browser → http://KALI_IP:5000 → dashboard empty
+
+Open second terminal on Kali → run the attack script:
+python3 demo_attacks.py 192.168.56.101

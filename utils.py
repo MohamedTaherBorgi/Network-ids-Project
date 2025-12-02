@@ -1,36 +1,15 @@
-from collections import defaultdict, deque
-from datetime import datetime, timedelta
+# utils.py
+import numpy as np
+from scapy.all import IP, TCP, UDP
 
-# Rate tracking: IP → protocol → deque of timestamps
-rate_tracker = defaultdict(lambda: defaultdict(lambda: deque()))
-
-# Port scan tracking: IP → set of destination ports seen with SYN
-port_scan_tracker = defaultdict(set)
-
-def update_rate(ip, proto):
-    """Track packets per second for a given IP + protocol"""
-    now = datetime.now()
-    bucket = rate_tracker[ip][proto]
-    bucket.append(now)
-    
-    # Remove timestamps older than 1 second
-    while bucket and bucket[0] < now - timedelta(seconds=1):
-        bucket.popleft()
-    
-    return len(bucket)
-
-def rate_exceeded(ip, proto, threshold=50):
-    return update_rate(ip, proto) > threshold
-
-def track_port_scan(ip, dport):
-    """Simple port scan detection: > 20 different ports in < 5 seconds"""
-    port_scan_tracker[ip].add(dport)
-    # Clean old entries (optional: add timestamp later if needed)
-    if len(port_scan_tracker[ip]) > 20:
-        port_scan_tracker[ip].clear()
-        return True
-    return False
-
-def reset_trackers():
-    rate_tracker.clear()
-    port_scan_tracker.clear()
+def extract_features_scapy(pkt):
+    if not pkt.haslayer(IP):
+        return None
+    ip = pkt[IP]
+    return [
+        len(pkt),
+        ip.proto,
+        pkt[TCP].sport if pkt.haslayer(TCP) else (pkt[UDP].sport if pkt.haslayer(UDP) else 0),
+        pkt[TCP].dport if pkt.haslayer(TCP) else (pkt[UDP].dport if pkt.haslayer(UDP) else 0),
+        int(pkt[TCP].flags) if pkt.haslayer(TCP) else 0
+    ]

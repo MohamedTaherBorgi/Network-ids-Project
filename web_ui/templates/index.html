@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NIDS - Live Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <meta http-equiv="refresh" content="2">
+</head>
+<body>
+    <h1>Network Intrusion Detection System</h1>
+    <h2>Real-time Alerts</h2>
+    <table id="alerts"><tr><th>Time</th><th>Source</th><th>Destination</th><th>Alert</th></tr></table>
+    <script>
+        fetch('/alerts').then(r => r.json()).then(data => {
+            const table = document.getElementById('alerts');
+            data.forEach(a => {
+                const row = table.insertRow();
+                row.innerHTML = `<td>${a.time}</td><td>${a.src}</td><td>${a.dst}</td><td>${a.message}</td>`;
+            });
+        });
+    </script>
+</body>
+</html>

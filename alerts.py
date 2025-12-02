@@ -1,17 +1,21 @@
-import datetime
+# alerts.py
+import logging
+from datetime import datetime
 import os
 
-LOG_PATH = "logs/alerts.log"
-
 os.makedirs("logs", exist_ok=True)
+logging.basicConfig(filename='logs/alerts.log', level=logging.INFO,
+                    format='%(asctime)s | %(message)s')
 
-def send_alert(message, src_ip="Unknown"):
-    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    alert_line = f"[{timestamp}] ALERT - {src_ip} - {message}\n"
-    
-    # Print to console (red color)
-    print(f"\033[91m[!] {alert_line.strip()}\033[0m")
-    
-    # Write to log file
-    with open(LOG_PATH, "a") as f:
-        f.write(alert_line)
+ALERTS = []
+
+def log_alert(message, src="?", dst="?"):
+    alert = {
+        "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "message": message,
+        "src": src,
+        "dst": dst
+    }
+    ALERTS.append(alert)
+    print(f"\033[91m[ALERT] {message} | {src} → {dst}\033[0m")
+    logging.info(f"{message} | {src} → {dst}")
