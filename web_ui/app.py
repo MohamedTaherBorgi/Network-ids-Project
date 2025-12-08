@@ -1,4 +1,3 @@
-# web_ui/app.py — FINAL: COUNTER NEVER STUCK
 from flask import Flask, render_template, jsonify # type: ignore
 from alerts import ALERTS # type: ignore
 
@@ -11,6 +10,6 @@ def index():
 @app.route('/alerts')
 def get_alerts():
     return jsonify({
-        "total": len(ALERTS),       # ← REAL TOTAL (1000+)
-        "alerts": ALERTS[-500:]     # ← last 500 for dashboard (fast)
+        "total": len(ALERTS),
+        "alerts": ALERTS[-500:]     # last 500 for dashboard
     })

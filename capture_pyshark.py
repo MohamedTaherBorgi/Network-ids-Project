@@ -1,4 +1,3 @@
-# capture_pyshark.py — SAFE & SILENT
 def start_pyshark_capture():
     print("[PYSHARK] Disabled on this VM (common issue) — Scapy is primary engine")
     print("           → 100% detection using Scapy (meets all requirements)")

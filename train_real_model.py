@@ -1,22 +1,13 @@
-# train_real_model.py - AUTO WORKS 100%
-from scapy.all import sniff, get_if_list
+from scapy.all import sniff, get_if_list # type: ignore
 from utils import extract_features_scapy
-import numpy as np
-from sklearn.ensemble import IsolationForest
-import joblib
+import numpy as np # type: ignore
+from sklearn.ensemble import IsolationForest # type: ignore
+import joblib # type: ignore
 import os
 
-# Auto-detect correct interface
-def find_interface():
-    interfaces = get_if_list()
-    for iface in interfaces:
-        if iface.startswith(('enp', 'eth', 'ens')):
-            return iface
-    return "eth2"  # Interface
-
-INTERFACE = find_interface()
+INTERFACE = "eth2" # Interface
 print(f"Using interface: {INTERFACE}")
-print("Capturing 500 normal packets for training (generate traffic on Ubuntu)...")
+print("Capturing 500 normal packets for training (generate traffic on victims VM)...")
 
 features = []
 
@@ -48,4 +39,4 @@ model.fit(X)
 
 os.makedirs("data", exist_ok=True)
 joblib.dump(model, "data/model_isolation_forest.pkl")
-print("[+] REAL MODEL TRAINED & SAVED — Ready for perfect anomaly detection!")
+print("[+] REAL MODEL TRAINED & SAVED")

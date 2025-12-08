@@ -1,11 +1,10 @@
-# anomalies.py
-import joblib
-import numpy as np
+import joblib # type: ignore
+import numpy as np # type: ignore
 import os
 import socket
 from utils import extract_features_scapy
-from alerts import log_alert
-from scapy.all import IP
+from alerts import log_alert # type: ignore
+from scapy.all import IP # type: ignore
 
 MODEL_PATH = "data/model_isolation_forest.pkl"
 

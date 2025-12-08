@@ -1,4 +1,3 @@
-# capture_scapy.py — FINAL UNKILLABLE VERSION
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -8,8 +7,7 @@ from anomalies import detect_anomaly_scapy # type: ignore
 import os
 from datetime import datetime
 
-# CHANGE THIS TO YOUR REAL INTERFACE (run `ip link` to check)
-INTERFACE = "eth2"
+INTERFACE = "eth2" # Interface
 
 packets = []
 
@@ -28,7 +26,7 @@ def scapy_callback(pkt):
         detect_anomaly_scapy(pkt)
 
     except Exception:
-        pass  # NEVER crash on malformed packet
+        pass
 
 def start_scapy_capture():
     print(f"[SCAPY] Starting live capture on {INTERFACE}...")

@@ -1,8 +1,7 @@
-# alerts.py
 import logging
 from datetime import datetime
 import os
-import pandas as pd
+import pandas as pd # type: ignore
 
 os.makedirs("logs", exist_ok=True)
 logging.basicConfig(filename='logs/alerts.log', level=logging.INFO,

@@ -1,6 +1,5 @@
-# utils.py
-import numpy as np
-from scapy.all import IP, TCP, UDP
+import numpy as np # type: ignore
+from scapy.all import IP, TCP, UDP # type: ignore
 
 def extract_features_scapy(pkt):
     if not pkt.haslayer(IP):

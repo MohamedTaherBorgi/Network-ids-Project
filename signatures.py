@@ -1,4 +1,3 @@
-# signatures.py — FINAL: DETECTS SYN, XMAS, NULL, FIN, etc.
 from alerts import log_alert # type: ignore
 from scapy.all import IP, TCP, ICMP, Raw # type: ignore
 
@@ -15,7 +14,7 @@ def check_signatures_scapy(pkt):
             flag_int = int(flags) if hasattr(flags, '__int__') else flags
 
             # SYN Scan
-            if flag_int & 0x02 and not flag_int & 0x10:  # SYN only
+            if flag_int & 0x02 and not flag_int & 0x10:
                 port = pkt[TCP].dport
                 if port in [21,22,23,25,80,443,445,1433,3306,3389,8080]:
                     log_alert(f"[SCAPY] SYN Scan → port {port}", src, dst)
@@ -38,4 +37,4 @@ def check_signatures_scapy(pkt):
                 pass
 
     except Exception:
-        pass  # Never crash
+        pass # To avoid crashes
