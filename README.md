@@ -155,13 +155,14 @@ network_ids/
 ├── utils.py                 → Feature extraction for ML model
 ├── train_real_model.py      → Manual training script on real lab traffic (REQUIRED)
 ├── run.sh                   → One-click launcher
-├── demo_attacks.py          → Automatic attack demo script (30 seconds = dashboard explosion)
 ├── requirements.txt         → All Python dependencies
 ├── data/                    → Stores .pcap files, processed CSVs, and trained ML model
 ├── logs/                    → Full alert log with timestamps
+├── test/
+│   └── demo_attacks.py      → Automatic attack demo script    
 ├── web_ui/
 │   ├── app.py               → Flask backend serving the dashboard
-│   ├── templates/index.html → Beautiful real-time dashboard (colors, ports, icons)
+│   ├── templates/index.html → Real-time dashboard
 │   └── static/style.css     → Cyberpunk theme
 └── README.md                → This file
 ```
