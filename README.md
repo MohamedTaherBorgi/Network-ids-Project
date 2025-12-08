@@ -225,6 +225,6 @@ This project is for **academic purposes only**.
 
 **⭐ If this project helps you, please star it! ⭐**
 
-Made with ❤️ by me
+Made with ❤️
 
 </div>
