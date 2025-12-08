@@ -99,7 +99,7 @@ sudo venv/bin/python3 train_real_model.py
 cd ~/network_ids
 
 # Make scripts executable
-chmod +x run.sh demo_attacks.py
+chmod +x run.sh test/demo_attacks.py
 
 # Start the NIDS
 ./run.sh
@@ -118,7 +118,7 @@ chmod +x run.sh demo_attacks.py
 In another terminal:
 
 ```bash
-./demo_attacks.py 172.168.100.4     # ← Replace with your victim's VM IP
+.demo_attacks.py <Target_IP>     # ← Replace with your victim's VM IP
 ```
 
 ### Triggers:
