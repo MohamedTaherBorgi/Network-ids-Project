@@ -140,7 +140,10 @@ In another terminal:
   - 🔴 Red / 🟠 Orange / 🟡 Yellow / 🟢 Green
 - 💻 **Cyberpunk professional design**
 
+<img width="1918" height="743" alt="Screenshot 2025-12-08 201921" src="https://github.com/user-attachments/assets/ec4f57ea-1f8c-47ff-b222-5db7152e9cb9" />
+
 ---
+
 
 ## 📁 Project Structure & File Descriptions
 
