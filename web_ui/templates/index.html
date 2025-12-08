@@ -1,22 +1,115 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>NIDS - Live Dashboard</title>
+    <meta charset="UTF-8">
+    <title>NIDS - Professional Dashboard</title>
     <link rel="stylesheet" href="/static/style.css">
     <meta http-equiv="refresh" content="2">
+    <style>
+        body { background: #000; color: #0f0; font-family: 'Courier New', monospace; margin: 0; padding: 20px; }
+        .header { text-align: center; margin: 30px 0; text-shadow: 0 0 15px #0f0; }
+        h1 { font-size: 3.2em; margin: 0; color: #0ff; }
+        h2 { color: #0f0; }
+        .stats { text-align: center; font-size: 2em; margin: 30px; padding: 15px; background: #001100; border: 3px solid #0f0; border-radius: 15px; display: inline-block; box-shadow: 0 0 30px #0f0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; box-shadow: 0 0 30px #0f0; }
+        th { background: #003300; padding: 18px; text-align: left; border: 2px solid #0f0; font-size: 1.1em; }
+        td { padding: 14px; border: 1px solid #0f0; transition: all 0.3s; }
+        tr:hover td { box-shadow: 0 0 20px #0f0; transform: scale(1.02); }
+
+        .critical { background: #440000 !important; color: #ff5555 !important; font-weight: bold; }
+        .high     { background: #332200 !important; color: #ffaa00 !important; }
+        .medium   { background: #222200 !important; color: #ffff55 !important; }
+        .low      { background: #002200 !important; color: #55ff55 !important; }
+        .info     { background: #000033 !important; color: #88ccff !important; }
+    </style>
 </head>
 <body>
-    <h1>Network Intrusion Detection System</h1>
-    <h2>Real-time Alerts</h2>
-    <table id="alerts"><tr><th>Time</th><th>Source</th><th>Destination</th><th>Alert</th></tr></table>
+    <div class="header">
+        <h1>⚡ NETWORK INTRUSION DETECTION SYSTEM ⚡</h1>
+        <h2>Real-Time Threat Monitoring</h2>
+    </div>
+
+    <div class="stats">
+        <span id="total">0</span> THREATS DETECTED
+    </div>
+
+    <table id="alerts">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Severity</th>
+                <th>Attack Type</th>
+                <th>Target Port</th>
+                <th>Source → Target</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
     <script>
-        fetch('/alerts').then(r => r.json()).then(data => {
-            const table = document.getElementById('alerts');
-            data.forEach(a => {
-                const row = table.insertRow();
-                row.innerHTML = `<td>${a.time}</td><td>${a.src}</td><td>${a.dst}</td><td>${a.message}</td>`;
-            });
-        });
+        function getSeverity(msg) {
+            if (msg.includes("ANOMALY") || msg.includes("Web attack") || msg.includes("EternalBlue")) return "critical";
+            if (msg.includes("STEALTH") || msg.includes("Xmas") || msg.includes("Null") || msg.includes("FIN")) return "high";
+            if (msg.includes("SYN Scan")) return "medium";
+            if (msg.includes("ICMP")) return "low";
+            return "info";
+        }
+
+        function formatAttack(msg) {
+            if (msg.includes("SYN Scan")) return "SYN Port Scan";
+            if (msg.includes("0x29")) return "Xmas Scan (Stealth)";
+            if (msg.includes("0x00")) return "Null Scan";
+            if (msg.includes("0x01")) return "FIN Scan";
+            if (msg.includes("0x21")) return "Full Xmas Scan";
+            if (msg.includes("ANOMALY")) return "TRAFFIC ANOMALY";
+            if (msg.includes("Web attack")) return "SQLi / LFI / XSS";
+            if (msg.includes("ICMP")) return "ICMP Flood / Sweep";
+            return msg.replace("[SCAPY]", "").replace("STEALTH SCAN", "").trim();
+        }
+
+        function extractPort(msg) {
+            const match = msg.match(/port (\d+)/);
+            if (match) {
+                const port = match[1];
+                const names = {
+                    21: "FTP", 22: "SSH", 23: "Telnet", 25: "SMTP", 80: "HTTP",
+                    443: "HTTPS", 445: "SMB", 3306: "MySQL", 3389: "RDP", 8080: "HTTP-Alt",
+                    1433: "MSSQL", 53: "DNS", 139: "NetBIOS"
+                };
+                return `<strong style="color:#ff0">${port}</strong> <small>(${names[port] || "Unknown"})</small>`;
+            }
+            return "—";
+        }
+
+        function updateDashboard() {
+            fetch('/alerts')
+                .then(r => r.json())
+                .then(data => {
+                    const alerts = Array.isArray(data) ? data : data.alerts || [];
+                    const total = Array.isArray(data) ? data.length : (data.total || alerts.length);
+
+                    document.getElementById('total').textContent = total;
+
+                    const tbody = document.querySelector('#alerts tbody');
+                    tbody.innerHTML = '';
+                    alerts.slice().reverse().forEach(a => {
+                        const row = tbody.insertRow(0);
+                        row.className = getSeverity(a.message);
+
+                        row.innerHTML = `
+                            <td>${a.time}</td>
+                            <td>${getSeverity(a.message).toUpperCase()}</td>
+                            <td>${formatAttack(a.message)}</td>
+                            <td>${extractPort(a.message)}</td>
+                            <td><strong>${a.src}</strong> → <strong>${a.dst}</strong></td>
+                        `;
+                    });
+                });
+        }
+
+        // Update immediately + every 2 seconds
+        updateDashboard();
+        setInterval(updateDashboard, 2000);
     </script>
 </body>
 </html>

@@ -1,0 +1,38 @@
+# 1. Create a virtual environment (you probably already have one, but let’s be safe)
+python3 -m venv venv --system-site-packages
+
+# 2. Activate it
+source venv/bin/activate
+
+# 3. NOW install everything inside the venv → no more error
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# 4. Install tshark (system-wide, required for PyShark)
+sudo apt install tshark -y
+
+how to run:
+# From network_ids/
+sudo venv/bin/python3 train_real_model.py  # Train once
+
+COMMANDS TO RUN ON UBUNTU TO TRAIN MODEL:
+##############################################################################
+# 1. Web traffic
+while true; do curl -s http://httpbin.org/get >/dev/null; sleep 1; done &
+
+# 2. SSH traffic (100% stable — this one never stops)
+while true; do ssh -o StrictHostKeyChecking=no -o BatchMode=yes localhost whoami >/dev/null 2>&1; sleep 3; done &
+
+# 3. Ping traffic
+ping 8.8.8.8 >/dev/null &
+
+# 4. Local web traffic
+while true; do curl -s http://localhost >/dev/null; sleep 2; done &
+##############################################################################
+
+chmod +x run.sh test/demo_attacks.py
+./run.sh  # Choose 1 or 3
+
+
+In another terminal: python3 demo_attacks.py 172.168.100.4 (your Ubuntu IP).
+Dashboard: http://127.0.0.1:5000 – watch alerts flood in!

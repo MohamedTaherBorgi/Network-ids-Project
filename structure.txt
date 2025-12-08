@@ -1,0 +1,26 @@
+network_ids/
+├── main.py
+├── capture_scapy.py
+├── capture_pyshark.py
+├── signatures.py
+├── anomalies.py
+├── alerts.py
+├── utils.py
+├── train_real_model.py
+├── run.sh
+├── requirements.txt
+├── data/
+│ ├── captures/
+│ ├── processed/
+│ └── model_isolation_forest.pkl
+├── web_ui/
+│ ├── static/
+│ │ └── style.css
+│ ├── templates/
+│ │ └── index.html
+│ └── app.py
+├── logs/
+│ └── alerts.log
+├── test/
+│ └── demo_attacks.py
+└── README.md

@@ -1,0 +1,8 @@
+2025-12-08 20:04:36,555 | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.0.2.15:5000
+2025-12-08 20:04:36,556 | [33mPress CTRL+C to quit[0m
+2025-12-08 20:04:41,594 | [SCAPY] ICMP Echo Request → possible flood | 172.168.100.3 → 172.168.100.4
+2025-12-08 20:04:42,597 | [SCAPY] ICMP Echo Request → possible flood | 172.168.100.3 → 172.168.100.4
+2025-12-08 20:04:43,598 | [SCAPY] ICMP Echo Request → possible flood | 172.168.100.3 → 172.168.100.4
