@@ -1,0 +1,14 @@
+# Ignore pickle files
+*.pkl
+
+# Ignore Python cache folders
+__pycache__/
+
+# Ignore packet capture files
+*.pcap
+
+# Ignore CSV files
+*.csv
+
+# Ignore log files
+*.log
