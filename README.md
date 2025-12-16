@@ -245,8 +245,6 @@ This project demonstrates:
 - Alert management and visualization  
 - Use of multiple tools (Scapy + PyShark) as required  
 
-**Fully meets and exceeds course objectives.**
-
 ---
 
 ## 👤 Author
