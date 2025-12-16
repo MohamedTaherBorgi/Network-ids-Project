@@ -237,8 +237,6 @@ Network-ids-Project/
 
 ## 🎓 Academic Value
 
-<div align="center">
-
 This project demonstrates:
 
 - Real-time network traffic analysis  
@@ -248,8 +246,6 @@ This project demonstrates:
 - Use of multiple tools (Scapy + PyShark) as required  
 
 **Fully meets and exceeds course objectives.**
-
-</div>
 
 ---
 
