@@ -85,7 +85,7 @@ The system monitors network traffic on a Kali Linux machine, detects common atta
 
 ```bash
 # Clone the project
-git clone https://github.com/yourusername/Network-ids-Project.git
+git clone https://github.com/MohamedTaherBorgi/Network-ids-Project.git
 cd Network-ids-Project
 
 # Create virtual environment
