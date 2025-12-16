@@ -1,17 +1,17 @@
-k# 🛡️ Network Intrusion Detection System (NIDS)
+<div align="center">
+
+# 🛡️ Network Intrusion Detection System (NIDS)
 
 ### University Cybersecurity Project — 2025
 
-<div align="center">
+**Author:** Mohamed Taher BORGI
 
-**Author:** Mohamed Taher BORGI  
-
-[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
-[![Scapy](https://img.shields.io/badge/Scapy-Packet%20Crafting-red.svg)](https://scapy.net/)
-[![PyShark](https://img.shields.io/badge/PyShark-tshark%20Wrapper-lightgrey.svg)](https://kiminewt.github.io/pyshark/)
-[![scikit-learn](https://img.shields.io/badge/scikit--learn-ML%20Anomaly-orange.svg)](https://scikit-learn.org/)
-[![Flask](https://img.shields.io/badge/Flask-Web%20Dashboard-green.svg)](https://flask.palletsprojects.com/)
-[![Status](https://img.shields.io/badge/Project%20Status-Completed-success.svg)]()
+![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)
+![Scapy](https://img.shields.io/badge/Scapy-Latest-green.svg)
+![PyShark](https://img.shields.io/badge/PyShark-Latest-orange.svg)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-Latest-red.svg)
+![Flask](https://img.shields.io/badge/Flask-Latest-black.svg)
+![Status](https://img.shields.io/badge/Status-Active-success.svg)
 
 </div>
 
@@ -19,98 +19,109 @@ k# 🛡️ Network Intrusion Detection System (NIDS)
 
 ## 🚀 Project Overview
 
-A **real-time Network Intrusion Detection System (NIDS)** built in Python that combines **signature-based detection** with **machine learning anomaly detection**.
+<div align="center">
 
-The system monitors live network traffic on a Kali Linux machine, detects common network and web-based attacks, generates structured alerts, and visualizes them on a **professional cyberpunk-style Flask dashboard**.
+A real-time **Network Intrusion Detection System** built in Python that combines **signature-based detection** and **machine learning anomaly detection**.
 
-### 🔑 Key Highlights
+The system monitors network traffic on a Kali Linux machine, detects common attacks (port scans, stealth scans, ICMP floods, SQL Injection, LFI), generates alerts, and displays them on a professional cyberpunk-style Flask dashboard.
 
-- Dual capture engines: **Scapy** (primary & stable) and **PyShark** (backup)
-- Signature detection for **network scans** and **web attacks**
-- ML-based anomaly detection using **Isolation Forest**
-- Persistent alert history with **color-coded severity**
-- Automatic **PCAP storage** and **CSV export**
-- Real-time dashboard with animations and counters
+</div>
+
+### Key Highlights:
+
+- ✅ Dual capture engines: **Scapy** (main, stable) + **PyShark** (backup)
+- ✅ Signature detection for network and web attacks
+- ✅ Anomaly detection using **Isolation Forest** trained on real traffic
+- ✅ Full alert history with color-coded severity and custom colors for SQLi/LFI
+- ✅ Automatic .pcap storage and CSV export
 
 ---
 
 ## 📋 Features
 
-### 🔍 Detection Capabilities
+<div align="center">
 
-- **Signature-Based Detection**
-  - SYN Scan
-  - Xmas Scan
-  - Null Scan
-  - FIN Scan
-  - ICMP Floods
-  - SQL Injection (SQLi)
-  - Local File Inclusion (LFI) / Directory Traversal
+| Feature | Description |
+|---------|-------------|
+| **Real-time Capture** | Scapy (primary) and PyShark (backup) |
+| **Signature Detection** | SYN, Xmas, Null, FIN scans • ICMP floods • SQL Injection • LFI/Directory Traversal |
+| **ML Anomaly Detection** | Isolation Forest with debouncing |
+| **Professional Dashboard** | Real-time threat counter • Full alert history • Custom colors • Flash animations |
+| **Alert Management** | Colored terminal output • Logging to `logs/alerts.log` • CSV export via Pandas |
+| **Packet Storage** | Automatic .pcap format storage |
 
-- **Machine Learning Anomaly Detection**
-  - Isolation Forest trained on **real network traffic**
-  - Feature scaling and debounced alerts to reduce noise
+</div>
 
-### 🖥️ Dashboard Features
+### Signature-based detection:
+- ✅ SYN, Xmas, Null, FIN scans
+- ✅ ICMP floods
+- ✅ SQL Injection and LFI/Directory Traversal (deep HTTP inspection)
 
-- Real-time threat counter
-- Scrollable **full alert history** (no deletion)
-- Custom alert colors:
-  - SQL Injection → Blue
-  - LFI / Directory Traversal → Silver / Gray
-  - Anomaly → Red
-  - Stealth Scans → Orange
-  - SYN Scan → Yellow
-  - ICMP → Green
-- Flash animation for new alerts
-
-### 🧾 Alert Management
-
-- Colored terminal output
-- Logging to `logs/alerts.log`
-- CSV export using Pandas
-- PCAP packet storage for forensic analysis
+### Flask Dashboard Features:
+- ✅ Real-time threat counter
+- ✅ Full alert history (no deletion of old alerts)
+- ✅ Custom colors: SQLi (blue), LFI (silver/gray), Anomaly (red), etc.
+- ✅ New alerts flash animation
 
 ---
 
 ## 🔧 Prerequisites
 
-- Kali Linux (recommended)
-- Python **3.11+**
-- Two virtual machines:
-  - Kali Linux (NIDS)
-  - Ubuntu (Victim)
-- Root privileges (packet capture)
-- Apache running on victim VM (for web attack testing)
+<div align="center">
+
+| Requirement | Description |
+|-------------|-------------|
+| **OS** | Kali Linux (recommended) |
+| **Python** | 3.11+ |
+| **VMs** | Two VMs: Kali (NIDS) + Ubuntu (Victim) |
+| **Privileges** | Root privileges for packet capture |
+| **Web Server** | Apache running on victim for web attack testing |
+
+</div>
 
 ---
 
 ## 📦 Installation
 
 ```bash
-git clone <your-repo>
+# Clone the project
+git clone https://github.com/yourusername/Network-ids-Project.git
 cd Network-ids-Project
 
+# Create virtual environment
 python3 -m venv venv --system-site-packages
+
+# Activate
 source venv/bin/activate
 
+# Install dependencies
 pip install --upgrade pip
 pip install -r requirements.txt
 
+# Install tshark for PyShark
 sudo apt install tshark -y
 ```
 
 ---
 
-## 🤖 Train the Machine Learning Model
+## 🤖 Train the ML Model
 
+<div align="center">
+
+### ⚠️ REQUIRED for good anomaly detection
+
+</div>
+
+**Step 1:** Generate normal traffic on the victim VM (Ubuntu):
 ```bash
 chmod +x normal_traffic.sh
 ./normal_traffic.sh
 ```
 
+**Step 2:** Train the model on Kali:
 ```bash
 sudo venv/bin/python3 train_real_model.py
+# Wait for 1000+ packets → model saved with scaler
 ```
 
 ---
@@ -119,27 +130,65 @@ sudo venv/bin/python3 train_real_model.py
 
 ```bash
 ./run.sh
+# Choose:
+# 1) Scapy only (recommended)
+# 2) PyShark only
+# 3) Both
 ```
 
-Dashboard:
-```
-http://<KALI_IP>:5000
-```
+<div align="center">
+
+**Dashboard:** `http://<KALI_IP>:5000`
+
+</div>
 
 ---
 
 ## 💥 Demo Attacks
 
 ```bash
-python3 demo_attacks.py <VICTIM_IP>
+python3 demo_attacks.py 192.168.125.7   # Replace with victim IP
 ```
 
-Manual tests:
+### Triggers:
+- ✅ SYN / Xmas scans
+- ✅ Aggressive scanning
+- ✅ ICMP flood
+- ✅ SQL Injection (with Apache on victim)
+- ✅ Directory Traversal / LFI
 
+### Manual web tests:
 ```bash
-curl -s -G --data-urlencode "id=1' OR '1'='1" http://<VICTIM_IP>/
-curl -s -G --data-urlencode "file=../../../../etc/passwd" http://<VICTIM_IP>/
+# SQLi (blue alert)
+curl -s -G --data-urlencode "id=1' OR '1'='1" http://192.168.125.7/
+
+# LFI (silver/gray alert)
+curl -s -G --data-urlencode "file=../../../../etc/passwd" http://192.168.125.7/
 ```
+
+---
+
+## 🎨 Dashboard Highlights
+
+<div align="center">
+
+### Alert Severity Colors
+
+| Attack Type | Color |
+|-------------|-------|
+| **SQL INJECTION** | 🔵 Blue |
+| **LFI / Directory Traversal** | ⚪ Silver/Gray |
+| **ANOMALY** | 🔴 Red |
+| **Stealth Scans** | 🟠 Orange |
+| **SYN Scans** | 🟡 Yellow |
+| **ICMP** | 🟢 Green |
+
+</div>
+
+### Features:
+- ✅ Full alert history (scrollable)
+- ✅ New alerts flash
+- ✅ Real-time counter
 
 ---
 
@@ -147,31 +196,75 @@ curl -s -G --data-urlencode "file=../../../../etc/passwd" http://<VICTIM_IP>/
 
 ```text
 Network-ids-Project/
-├── main.py
-├── capture_scapy.py
-├── capture_pyshark.py
-├── signatures.py
-├── anomalies.py
-├── alerts.py
-├── utils.py
-├── train_real_model.py
-├── demo_attacks.py
-├── run.sh
+├── main.py                  → Launcher + engine selection
+├── capture_scapy.py         → Main capture engine
+├── capture_pyshark.py       → Backup capture engine
+├── signatures.py            → Signature rules (network + web)
+├── anomalies.py             → ML anomaly detection (debounced)
+├── alerts.py                → Alert logging, terminal, CSV
+├── utils.py                 → Feature extraction
+├── train_real_model.py      → Real traffic training
+├── demo_attacks.py          → Automated attack demo
+├── run.sh                   → One-click launcher
+├── normal_traffic.sh        → Normal traffic generator for victim
 ├── requirements.txt
-├── data/
-├── logs/
+├── data/                    → .pcap, model, CSV
+├── logs/                    → alerts.log
 ├── web_ui/
-│   ├── app.py
-│   └── templates/index.html
+│   ├── app.py               → Flask server
+│   └── templates/index.html → Dashboard
 └── README.md
 ```
 
 ---
 
+## 🛠️ Technologies Used
+
+<div align="center">
+
+| Technology | Purpose |
+|------------|---------|
+| **Scapy** | Primary packet capture & crafting |
+| **PyShark** | Backup capture engine |
+| **scikit-learn** | Isolation Forest anomaly detection |
+| **Flask** | Real-time dashboard |
+| **Pandas** | CSV export |
+| **requests** | Clean HTTP attacks in demo |
+
+</div>
+
+---
+
+## 🎓 Academic Value
+
+<div align="center">
+
+This project demonstrates:
+
+✅ Real-time network traffic analysis  
+✅ Signature-based and ML-based intrusion detection  
+✅ Deep packet inspection for web attacks  
+✅ Alert management and visualization  
+✅ Use of multiple tools (Scapy + PyShark) as required  
+
+**Fully meets and exceeds course objectives.**
+
+</div>
+
+---
+
 ## 👤 Author
 
-**Mohamed Taher BORGI**  
-Cybersecurity Student | Red Team Enthusiast | Network Security  
+<div align="center">
 
-⭐ Star this repository if it helped you ⭐
+**Mohamed Taher BORGI**
 
+*Cybersecurity Student | Red Team Enthusiast | Network Security*
+
+---
+
+Made with ❤️ and packets
+
+⭐ **Star this repo if it helped you!** ⭐
+
+</div>
