@@ -29,11 +29,11 @@ The system monitors network traffic on a Kali Linux machine, detects common atta
 
 ### Key Highlights:
 
-- ✅ Dual capture engines: **Scapy** (main, stable) + **PyShark** (backup)
-- ✅ Signature detection for network and web attacks
-- ✅ Anomaly detection using **Isolation Forest** trained on real traffic
-- ✅ Full alert history with color-coded severity and custom colors for SQLi/LFI
-- ✅ Automatic .pcap storage and CSV export
+- Dual capture engines: **Scapy** (main, stable) + **PyShark** (backup)
+- Signature detection for network and web attacks
+- Anomaly detection using **Isolation Forest** trained on real traffic
+- Full alert history with color-coded severity and custom colors for SQLi/LFI
+- Automatic .pcap storage and CSV export
 
 ---
 
@@ -53,15 +53,15 @@ The system monitors network traffic on a Kali Linux machine, detects common atta
 </div>
 
 ### Signature-based detection:
-- ✅ SYN, Xmas, Null, FIN scans
-- ✅ ICMP floods
-- ✅ SQL Injection and LFI/Directory Traversal (deep HTTP inspection)
+- SYN, Xmas, Null, FIN scans
+- ICMP floods
+- SQL Injection and LFI/Directory Traversal (deep HTTP inspection)
 
 ### Flask Dashboard Features:
-- ✅ Real-time threat counter
-- ✅ Full alert history (no deletion of old alerts)
-- ✅ Custom colors: SQLi (blue), LFI (silver/gray), Anomaly (red), etc.
-- ✅ New alerts flash animation
+- Real-time threat counter
+- Full alert history (no deletion of old alerts)
+- Custom colors: SQLi (blue), LFI (silver/gray), Anomaly (red), etc.
+- New alerts flash animation
 
 ---
 
@@ -147,23 +147,23 @@ sudo venv/bin/python3 train_real_model.py
 ## 💥 Demo Attacks
 
 ```bash
-python3 demo_attacks.py 192.168.125.7   # Replace with victim IP
+python3 demo_attacks.py <victim IP>
 ```
 
 ### Triggers:
-- ✅ SYN / Xmas scans
-- ✅ Aggressive scanning
-- ✅ ICMP flood
-- ✅ SQL Injection (with Apache on victim)
-- ✅ Directory Traversal / LFI
+- SYN / Xmas scans
+- Aggressive scanning
+- ICMP flood
+- SQL Injection (with Apache on victim)
+- Directory Traversal / LFI
 
 ### Manual web tests:
 ```bash
 # SQLi (blue alert)
-curl -s -G --data-urlencode "id=1' OR '1'='1" http://192.168.125.7/
+curl -s -G --data-urlencode "id=1' OR '1'='1" http://<victim IP>/
 
 # LFI (silver/gray alert)
-curl -s -G --data-urlencode "file=../../../../etc/passwd" http://192.168.125.7/
+curl -s -G --data-urlencode "file=../../../../etc/passwd" http://<victim IP>/
 ```
 
 ---
@@ -186,9 +186,9 @@ curl -s -G --data-urlencode "file=../../../../etc/passwd" http://192.168.125.7/
 </div>
 
 ### Features:
-- ✅ Full alert history (scrollable)
-- ✅ New alerts flash
-- ✅ Real-time counter
+- Full alert history (scrollable)
+- New alerts flash
+- Real-time counter
 
 ---
 
@@ -241,11 +241,11 @@ Network-ids-Project/
 
 This project demonstrates:
 
-✅ Real-time network traffic analysis  
-✅ Signature-based and ML-based intrusion detection  
-✅ Deep packet inspection for web attacks  
-✅ Alert management and visualization  
-✅ Use of multiple tools (Scapy + PyShark) as required  
+- Real-time network traffic analysis  
+- Signature-based and ML-based intrusion detection  
+- Deep packet inspection for web attacks  
+- Alert management and visualization  
+- Use of multiple tools (Scapy + PyShark) as required  
 
 **Fully meets and exceeds course objectives.**
 
