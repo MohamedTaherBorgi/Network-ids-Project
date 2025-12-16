@@ -8,12 +8,14 @@ Network-ids-Project/
 ├── utils.py                 → Feature extraction
 ├── train_real_model.py      → Real traffic training
 ├── test/
-│    └──demo_attacks.py          → Automated attack demo
+│   └── demo_attacks.py          → Automated attack demo
 ├── run.sh                   → One-click launcher
+├── normal_traffic.sh        → Normal traffic generator for victim
 ├── requirements.txt
 ├── data/                    → .pcap, model, CSV
 ├── logs/                    → alerts.log
 ├── web_ui/
 │   ├── app.py               → Flask server
+│   ├── static/style.css     → Cyberpunk theme
 │   └── templates/index.html → Dashboard
 └── README.md
