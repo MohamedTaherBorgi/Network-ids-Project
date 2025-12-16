@@ -140,6 +140,8 @@ sudo venv/bin/python3 train_real_model.py
 
 **Dashboard:** `http://<KALI_IP>:5000`
 
+<img width="1918" height="743" alt="image" src="https://github.com/user-attachments/assets/234febcd-c8bd-4824-a018-35c249b96fde" />
+
 </div>
 
 ---
