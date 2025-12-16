@@ -1,6 +1,25 @@
+# capture_pyshark.py — SIMPLE BACKUP ENGINE
+import pyshark
+from signatures import check_signatures_pyshark
+from alerts import log_alert
+
+INTERFACE = "eth1"
+
 def start_pyshark_capture():
-    print("[PYSHARK] Disabled on this VM (common issue) — Scapy is primary engine")
-    print("           → 100% detection using Scapy (meets all requirements)")
-    import time
-    while True:
-        time.sleep(3600)  # keeps thread alive
+    print(f"[PYSHARK] Starting backup capture on {INTERFACE}...")
+
+    capture = pyshark.LiveCapture(
+        interface=INTERFACE,
+        bpf_filter="tcp or icmp"
+    )
+
+    try:
+        for packet in capture.sniff_continuously():
+            try:
+                check_signatures_pyshark(packet)
+            except Exception:
+                pass  # Silent on bad packet
+    except Exception as e:
+        print(f"[PYSHARK] Capture stopped: {e}")
+
+    print("[PYSHARK] Backup capture ended")

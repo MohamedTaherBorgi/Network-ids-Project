@@ -6,32 +6,40 @@ import os
 
 print("""
 ╔═══════════════════════════════════════════════════════════════╗
-║                    WELCOME TO NETWORK IDS                     ║
+║                     WELCOME TO NETWORK IDS                    ║
 ╚═══════════════════════════════════════════════════════════════╝
 """)
 
-choice = input("Start capture with:\n1) Scapy only (RECOMMENDED — 100% stable)\n2) PyShark only\n3) Both (PyShark is disabled on this VM)\n> ").strip()
+choice = input("Start capture with:\n1) Scapy only (RECOMMENDED)\n2) PyShark only\n3) Both\n> ").strip()
 
 os.makedirs("data/captures", exist_ok=True)
 os.makedirs("logs", exist_ok=True)
 
-# Start capture based on choice
 if choice == "1":
-    print("[+] Starting Scapy only — PERFECT stability")
+    print("[+] Starting Scapy only")
     threading.Thread(target=start_scapy_capture, daemon=True).start()
-
 elif choice == "2":
-    print("[+] Starting PyShark only (may not work on some VMs)")
+    print("[+] Starting PyShark only")
     threading.Thread(target=start_pyshark_capture, daemon=True).start()
-
 elif choice == "3":
-    print("[+] Starting BOTH (Scapy = main, PyShark = silent backup)")
+    print("[+] Starting BOTH (Scapy main + PyShark backup)")
     threading.Thread(target=start_scapy_capture, daemon=True).start()
     threading.Thread(target=start_pyshark_capture, daemon=True).start()
-
 else:
-    print("[!] Invalid choice → defaulting to Scapy only (recommended)")
+    print("[+] Default: Scapy only")
     threading.Thread(target=start_scapy_capture, daemon=True).start()
 
-print("[+] Dashboard → http://127.0.0.1:5000")
+def get_local_ip():
+    import socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(('10.255.255.255', 1))
+        IP = s.getsockname()[0]
+    except:
+        IP = '127.0.0.1'
+    finally:
+        s.close()
+    return IP
+
+print(f"[+] Dashboard → http://{get_local_ip()}:5000")
 app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)

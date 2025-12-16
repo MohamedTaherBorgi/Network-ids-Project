@@ -1,12 +1,18 @@
-import joblib # type: ignore
-import numpy as np # type: ignore
+# anomalies.py — FINAL WITH DEBOUNCE (NO MORE 1000+ ALERTS)
+import joblib
+import numpy as np
 import os
 import socket
+import time
+from collections import defaultdict
 from utils import extract_features_scapy
-from alerts import log_alert # type: ignore
-from scapy.all import IP # type: ignore
+from alerts import log_alert
+from scapy.all import IP
 
 MODEL_PATH = "data/model_isolation_forest.pkl"
+
+# Debounce cache: max 1 anomaly per (src->dst) every 5 seconds
+_last_anomaly = defaultdict(float)
 
 def validate_ip(ip: str) -> bool:
     try:
@@ -15,55 +21,55 @@ def validate_ip(ip: str) -> bool:
     except socket.error:
         return False
 
-def train_model():
+def load_or_train_model():
     if os.path.exists(MODEL_PATH):
-        return
-    print("[*] No model found → training with synthetic data...")
+        data = joblib.load(MODEL_PATH)
+        if isinstance(data, dict) and 'model' in data:
+            return data['model'], data.get('scaler')
+        return data, None
+    
+    print("[*] No model → synthetic fallback")
     from sklearn.ensemble import IsolationForest
-    normal = np.random.normal([100, 6, 35000, 35000, 2], [60, 3, 15000, 15000, 10], (1500, 5))
-    anomalies = np.random.normal([1200, 1, 80, 80, 40], [400, 0, 20, 20, 50], (100, 5))
+    normal = np.random.normal([120, 6, 40000, 80, 18], [80, 5, 20000, 100, 20], (2000, 5))
+    anomalies = np.random.normal([800, 1, 22, 22, 41], [300, 0, 10, 10, 50], (200, 5))
     X = np.vstack([normal, anomalies])
-    model = IsolationForest(contamination=0.05, random_state=42, n_estimators=200, behaviour="new")
+    model = IsolationForest(contamination=0.06, n_estimators=400, random_state=42)
     model.fit(X)
     os.makedirs("data", exist_ok=True)
     joblib.dump(model, MODEL_PATH)
-    print(f"[+] Model trained and saved → {MODEL_PATH}")
+    return model, None
+
+MODEL, SCALER = load_or_train_model()
 
 def detect_anomaly_scapy(pkt):
     if not pkt.haslayer(IP):
         return
-    src = pkt[IP].src
-    dst = pkt[IP].dst
-    if not validate_ip(src) or not validate_ip(dst):
-        log_alert("INVALID TRAFFIC - Invalid IP address (Scapy)", src, dst)
-        return
-    train_model()
-    model = joblib.load(MODEL_PATH)
-    feats = extract_features_scapy(pkt)
-    if feats is None:
-        return
-    if model.predict([feats])[0] == -1:
-        log_alert("ANOMALY DETECTED (Scapy) - Unusual network behavior", src, dst)
-
-def detect_anomaly_pyshark(packet):
+    
     try:
-        if not hasattr(packet, "ip"):
-            return
-        src = packet.ip.src
-        dst = packet.ip.dst
+        src = pkt[IP].src
+        dst = pkt[IP].dst
+        
         if not validate_ip(src) or not validate_ip(dst):
-            log_alert("INVALID TRAFFIC - Invalid IP address (PyShark)", src, dst)
+            return  # Silent drop spoofed
+        
+        feats = extract_features_scapy(pkt)
+        if feats is None:
             return
-        train_model()
-        model = joblib.load(MODEL_PATH)
-        feats = [
-            int(packet.length),
-            int(packet.ip.proto),
-            int(packet.tcp.srcport) if hasattr(packet, "tcp") else 0,
-            int(packet.tcp.dstport) if hasattr(packet, "tcp") else 0,
-            int(packet.tcp.flags, 16) if hasattr(packet, "tcp") else 0,
-        ]
-        if model.predict([feats])[0] == -1:
-            log_alert("ANOMALY DETECTED (PyShark) - Unusual network behavior", src, dst)
+        
+        feats_array = np.array([feats])
+        if SCALER is not None:
+            feats_array = SCALER.transform(feats_array)
+        
+        if MODEL.predict(feats_array)[0] == -1:
+            key = f"{src}->{dst}"
+            now = time.time()
+            if now - _last_anomaly[key] > 5:  # 1 anomaly per flow every 5s
+                log_alert("ANOMALY DETECTED - Suspicious traffic flow", src, dst)
+                _last_anomaly[key] = now
+    
     except Exception:
         pass
+
+# DISABLE PYSHARK ANOMALY TO AVOID DUPLICATES
+def detect_anomaly_pyshark(packet):
+    pass  # Intentionally disabled — Scapy handles ML

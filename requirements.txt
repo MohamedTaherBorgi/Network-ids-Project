@@ -5,3 +5,4 @@ scikit-learn
 flask
 numpy
 joblib
+requests

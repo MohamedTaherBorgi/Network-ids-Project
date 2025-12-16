@@ -1,26 +1,19 @@
-network_ids/
-├── main.py
-├── capture_scapy.py
-├── capture_pyshark.py
-├── signatures.py
-├── anomalies.py
-├── alerts.py
-├── utils.py
-├── train_real_model.py
-├── run.sh
-├── requirements.txt
-├── data/
-│ ├── captures/
-│ ├── processed/
-│ └── model_isolation_forest.pkl
-├── web_ui/
-│ ├── static/
-│ │ └── style.css
-│ ├── templates/
-│ │ └── index.html
-│ └── app.py
-├── logs/
-│ └── alerts.log
+Network-ids-Project/
+├── main.py                  → Launcher + engine selection
+├── capture_scapy.py         → Main capture engine
+├── capture_pyshark.py       → Backup capture engine
+├── signatures.py            → Signature rules (network + web)
+├── anomalies.py             → ML anomaly detection (debounced)
+├── alerts.py                → Alert logging, terminal, CSV
+├── utils.py                 → Feature extraction
+├── train_real_model.py      → Real traffic training
 ├── test/
-│ └── demo_attacks.py
+│    └──demo_attacks.py          → Automated attack demo
+├── run.sh                   → One-click launcher
+├── requirements.txt
+├── data/                    → .pcap, model, CSV
+├── logs/                    → alerts.log
+├── web_ui/
+│   ├── app.py               → Flask server
+│   └── templates/index.html → Dashboard
 └── README.md

@@ -69,17 +69,17 @@ sudo apt install tshark -y
 ### Step 1: Generate Normal Traffic (Victim VM)
 
 ```bash
-# 1. Web traffic
-while true; do curl -s http://httpbin.org/get >/dev/null; sleep 1; done &
+# 1. Fast external HTTP (tons of packets)
+while true; do curl -s http://httpbin.org/get >/dev/null; sleep 0.1; done &
 
-# 2. SSH traffic (100% stable)
-while true; do ssh -o StrictHostKeyChecking=no -o BatchMode=yes localhost whoami >/dev/null 2>&1; sleep 3; done &
+# 2. Fast HTTPS
+while true; do curl -s https://example.com >/dev/null; sleep 0.2; done &
 
-# 3. Ping traffic
+# 3. Ping Kali directly (replace with your Kali IP)
+ping [KALI-IP] >/dev/null &
+
+# 4. Ping Google (ICMP + DNS)
 ping 8.8.8.8 >/dev/null &
-
-# 4. Local web traffic
-while true; do curl -s http://localhost >/dev/null; sleep 2; done &
 ```
 
 ### Step 2: Train the Model (Kali)
