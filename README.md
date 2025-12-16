@@ -1,94 +1,116 @@
-# 🛡️ Network Intrusion Detection System (NIDS)
-### University Project 2025
+k# 🛡️ Network Intrusion Detection System (NIDS)
+
+### University Cybersecurity Project — 2025
 
 <div align="center">
 
 **Author:** Mohamed Taher BORGI  
 
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-Academic-green.svg)]()
-[![Status](https://img.shields.io/badge/Status-Production-success.svg)]()
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
+[![Scapy](https://img.shields.io/badge/Scapy-Packet%20Crafting-red.svg)](https://scapy.net/)
+[![PyShark](https://img.shields.io/badge/PyShark-tshark%20Wrapper-lightgrey.svg)](https://kiminewt.github.io/pyshark/)
+[![scikit-learn](https://img.shields.io/badge/scikit--learn-ML%20Anomaly-orange.svg)](https://scikit-learn.org/)
+[![Flask](https://img.shields.io/badge/Flask-Web%20Dashboard-green.svg)](https://flask.palletsprojects.com/)
+[![Status](https://img.shields.io/badge/Project%20Status-Completed-success.svg)]()
 
 </div>
 
 ---
 
-## 🚀 Features
+## 🚀 Project Overview
 
-- **Real-time packet capture** using **Scapy** (main engine) + **PyShark** (optional)
-- **35+ signature rules** for detecting:
-  - Port scans (SYN, Xmas, Null, FIN)
-  - SQL Injection & LFI attacks
-  - SMB exploits
-  - ICMP floods
-  - And much more...
-- **Anomaly detection** powered by **Isolation Forest** ML model trained on **real network traffic**
-- **Beautiful Flask web dashboard** featuring:
-  - Color-coded severity levels
-  - Port names and service identification
-  - Attack descriptions
-  - Unlimited real-time counter
-- **Automatic packet storage** (.pcap format)
-- **CSV export** using Pandas for further analysis
-- **Comprehensive logging** system
+A **real-time Network Intrusion Detection System (NIDS)** built in Python that combines **signature-based detection** with **machine learning anomaly detection**.
+
+The system monitors live network traffic on a Kali Linux machine, detects common network and web-based attacks, generates structured alerts, and visualizes them on a **professional cyberpunk-style Flask dashboard**.
+
+### 🔑 Key Highlights
+
+- Dual capture engines: **Scapy** (primary & stable) and **PyShark** (backup)
+- Signature detection for **network scans** and **web attacks**
+- ML-based anomaly detection using **Isolation Forest**
+- Persistent alert history with **color-coded severity**
+- Automatic **PCAP storage** and **CSV export**
+- Real-time dashboard with animations and counters
 
 ---
 
-## 📋 Prerequisites
+## 📋 Features
 
-- **Kali Linux** (recommended)
-- **Python 3.8+**
-- **Root/sudo privileges** (required for packet capture)
-- **tshark** (for PyShark support)
+### 🔍 Detection Capabilities
+
+- **Signature-Based Detection**
+  - SYN Scan
+  - Xmas Scan
+  - Null Scan
+  - FIN Scan
+  - ICMP Floods
+  - SQL Injection (SQLi)
+  - Local File Inclusion (LFI) / Directory Traversal
+
+- **Machine Learning Anomaly Detection**
+  - Isolation Forest trained on **real network traffic**
+  - Feature scaling and debounced alerts to reduce noise
+
+### 🖥️ Dashboard Features
+
+- Real-time threat counter
+- Scrollable **full alert history** (no deletion)
+- Custom alert colors:
+  - SQL Injection → Blue
+  - LFI / Directory Traversal → Silver / Gray
+  - Anomaly → Red
+  - Stealth Scans → Orange
+  - SYN Scan → Yellow
+  - ICMP → Green
+- Flash animation for new alerts
+
+### 🧾 Alert Management
+
+- Colored terminal output
+- Logging to `logs/alerts.log`
+- CSV export using Pandas
+- PCAP packet storage for forensic analysis
 
 ---
 
-## 🔧 Full Installation (Kali Linux)
+## 🔧 Prerequisites
+
+- Kali Linux (recommended)
+- Python **3.11+**
+- Two virtual machines:
+  - Kali Linux (NIDS)
+  - Ubuntu (Victim)
+- Root privileges (packet capture)
+- Apache running on victim VM (for web attack testing)
+
+---
+
+## 📦 Installation
 
 ```bash
-# 1. Create virtual environment with system packages access
-python3 -m venv venv --system-site-packages
+git clone <your-repo>
+cd Network-ids-Project
 
-# 2. Activate environment
+python3 -m venv venv --system-site-packages
 source venv/bin/activate
 
-# 3. Install Python dependencies
 pip install --upgrade pip
 pip install -r requirements.txt
 
-# 4. Install tshark (required for PyShark)
 sudo apt install tshark -y
 ```
 
 ---
 
-## 🤖 Train the ML Model on Real Traffic
-
-**⚠️ REQUIRED for accurate anomaly detection**
-
-### Step 1: Generate Normal Traffic (Victim VM)
+## 🤖 Train the Machine Learning Model
 
 ```bash
-# 1. Fast external HTTP (tons of packets)
-while true; do curl -s http://httpbin.org/get >/dev/null; sleep 0.1; done &
-
-# 2. Fast HTTPS
-while true; do curl -s https://example.com >/dev/null; sleep 0.2; done &
-
-# 3. Ping Kali directly (replace with your Kali IP)
-ping [KALI-IP] >/dev/null &
-
-# 4. Ping Google (ICMP + DNS)
-ping 8.8.8.8 >/dev/null &
+chmod +x normal_traffic.sh
+./normal_traffic.sh
 ```
 
-### Step 2: Train the Model (Kali)
-
 ```bash
-cd ~/network_ids
 sudo venv/bin/python3 train_real_model.py
-
-# → Wait ~30-60 seconds → [+] REAL MODEL TRAINED & SAVED
 ```
 
 ---
@@ -96,139 +118,60 @@ sudo venv/bin/python3 train_real_model.py
 ## 🎯 Launch the NIDS
 
 ```bash
-cd ~/network_ids
-
-# Make scripts executable
-chmod +x run.sh test/demo_attacks.py
-
-# Start the NIDS
 ./run.sh
-
-# → Choose option 1 (Scapy only) → 100% stable, zero freeze
 ```
 
-**Dashboard Access:** `http://YOUR_KALI_IP:5000`
+Dashboard:
+```
+http://<KALI_IP>:5000
+```
 
 ---
 
-## 💥 Attack Demo
-
-**Make the dashboard explode in 30 seconds!**
-
-In another terminal:
+## 💥 Demo Attacks
 
 ```bash
-.demo_attacks.py <Target_IP>     # ← Replace with your victim's VM IP
+python3 demo_attacks.py <VICTIM_IP>
 ```
 
-### Triggers:
-- ✅ SYN / Xmas / Null / FIN scans
-- ✅ ML-based anomalies
-- ✅ SQLi / LFI simulation
-- ✅ ICMP flood
+Manual tests:
+
+```bash
+curl -s -G --data-urlencode "id=1' OR '1'='1" http://<VICTIM_IP>/
+curl -s -G --data-urlencode "file=../../../../etc/passwd" http://<VICTIM_IP>/
+```
 
 ---
 
-## 🎨 Web Dashboard Features
+## 📁 Project Structure
 
-- 📊 **Real-time threat counter**
-- 🏷️ **Human-readable attack names**
-  - Examples: "Xmas Scan (Stealth)", "SQLi / LFI Attempt"
-- 🔌 **Target port + service name**
-  - SSH, HTTP, SMB, RDP, MySQL, etc.
-- 🎨 **Color-coded severity levels**
-  - 🔴 Red / 🟠 Orange / 🟡 Yellow / 🟢 Green
-- 💻 **Cyberpunk professional design**
-
-<img width="1918" height="743" alt="Screenshot 2025-12-08 201921" src="https://github.com/user-attachments/assets/ec4f57ea-1f8c-47ff-b222-5db7152e9cb9" />
-
----
-
-
-## 📁 Project Structure & File Descriptions
-
-```
-network_ids/
-├── main.py                  → Main entry point — starts capture + Flask server
-├── capture_scapy.py         → Primary packet capture using Scapy (stable & recommended)
-├── capture_pyshark.py       → PyShark capture (kept for requirement, disabled if unstable)
-├── signatures.py            → 35+ rule-based detection engine (scans, exploits, web attacks)
-├── anomalies.py             → ML anomaly detection using Isolation Forest (real traffic trained)
-├── alerts.py                → Alert logging, terminal display, CSV export (Pandas)
-├── utils.py                 → Feature extraction for ML model
-├── train_real_model.py      → Manual training script on real lab traffic (REQUIRED)
-├── run.sh                   → One-click launcher
-├── requirements.txt         → All Python dependencies
-├── data/                    → Stores .pcap files, processed CSVs, and trained ML model
-├── logs/                    → Full alert log with timestamps
-├── test/
-│   └── demo_attacks.py      → Automatic attack demo script    
+```text
+Network-ids-Project/
+├── main.py
+├── capture_scapy.py
+├── capture_pyshark.py
+├── signatures.py
+├── anomalies.py
+├── alerts.py
+├── utils.py
+├── train_real_model.py
+├── demo_attacks.py
+├── run.sh
+├── requirements.txt
+├── data/
+├── logs/
 ├── web_ui/
-│   ├── app.py               → Flask backend serving the dashboard
-│   ├── templates/index.html → Real-time dashboard
-│   └── static/style.css     → Cyberpunk theme
-└── README.md                → This file
+│   ├── app.py
+│   └── templates/index.html
+└── README.md
 ```
-
----
-
-## 🛠️ Technologies Used
-
-- **Scapy** - Packet manipulation and capture
-- **PyShark** - Alternative packet capture interface
-- **Scikit-learn** - Machine learning (Isolation Forest)
-- **Flask** - Web dashboard backend
-- **Pandas** - Data processing and CSV export
-- **Python 3.8+** - Core programming language
-
----
-
-## 📊 Detection Capabilities
-
-### Signature-Based Detection (35+ Rules)
-- Port scanning techniques (SYN, Xmas, Null, FIN)
-- SQL Injection attempts
-- Local File Inclusion (LFI)
-- SMB exploitation
-- ICMP flooding
-- Suspicious traffic patterns
-
-### ML-Based Anomaly Detection
-- Trained on real network traffic
-- Isolation Forest algorithm
-- Detects unknown/zero-day attacks
-- Adaptive learning from normal behavior
-
----
-
-## 🎓 Academic Project
-
-This project was developed as part of a university cybersecurity course, demonstrating:
-- Network security fundamentals
-- Machine learning applications in cybersecurity
-- Real-time threat detection systems
-- Full-stack development skills
-
----
-
-## 📝 License
-
-This project is for **academic purposes only**.
 
 ---
 
 ## 👤 Author
 
-**Mohamed Taher BORGI**
+**Mohamed Taher BORGI**  
+Cybersecurity Student | Red Team Enthusiast | Network Security  
 
-*Cybersecurity Enthusiast | Network Security | Machine Learning*
+⭐ Star this repository if it helped you ⭐
 
----
-
-<div align="center">
-
-**⭐ If this project helps you, please star it! ⭐**
-
-Made with ❤️
-
-</div>
