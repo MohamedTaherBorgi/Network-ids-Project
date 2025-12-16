@@ -204,7 +204,8 @@ Network-ids-Project/
 ├── alerts.py                → Alert logging, terminal, CSV
 ├── utils.py                 → Feature extraction
 ├── train_real_model.py      → Real traffic training
-├── demo_attacks.py          → Automated attack demo
+├── test/
+│   └── demo_attacks.py          → Automated attack demo
 ├── run.sh                   → One-click launcher
 ├── normal_traffic.sh        → Normal traffic generator for victim
 ├── requirements.txt
@@ -212,6 +213,7 @@ Network-ids-Project/
 ├── logs/                    → alerts.log
 ├── web_ui/
 │   ├── app.py               → Flask server
+│   ├── static/style.css     → Cyberpunk theme
 │   └── templates/index.html → Dashboard
 └── README.md
 ```
