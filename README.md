@@ -23,7 +23,7 @@
 
 A real-time **Network Intrusion Detection System** built in Python that combines **signature-based detection** and **machine learning anomaly detection**.
 
-The system monitors network traffic on a Kali Linux machine, detects common attacks (port scans, stealth scans, ICMP floods, SQL Injection, LFI), generates alerts, and displays them on a professional cyberpunk-style Flask dashboard.
+The system monitors network traffic on a Kali Linux machine, detects common attacks (port scans, stealth scans, ICMP floods, SQL Injection, LFI), generates alerts, and displays them on a Flask dashboard.
 
 </div>
 
